@@ -25,6 +25,7 @@ class MovieFactory extends Factory
             'description' => $this->faker->paragraph(3),
             'thumb' => $this->faker->imageUrl(480, 680, $genre.' movie poster'),
             'genre' => $genre,
+            'popularity' => $this->faker->numberBetween(1, 100),
             'is_active' => true,
             'created_at' => now(),
         ];
