@@ -1,16 +1,16 @@
 <p align="center"><a href="#" target="_blank"><img src="public/images/filmsdb.svg" width="400" alt="Filmsdb title"></a></p>
 
-[English](README.md) [日本語](README-jp.md) 
+[English](README.md) [日本語](README-jp.md)
 
 [![Testing Filmsdb](https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis/actions/workflows/laravel.yml/badge.svg)](https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis/actions/workflows/laravel.yml)
 
-# FilmsDB
+# FilmsDB (下書き)
 
-Filmsdb is a laravel based films database api.  It allows clients to search for films, getting details, authenticate, add and get favorites. 
+Filmsdbは、Laravelベースの映画データベースAPIです。クライアントは映画を検索し、詳細を取得し、認証し、お気に入りを追加および取得することができます。
 
-## Installation
+## インストール
 
-Instructions will change.
+指示は変更されます。
 
 ### Step 1
 
@@ -33,9 +33,9 @@ copy .env.testing .env
 
 #### Install via docker (easy)
 
-Prerequisites: 
-You need docker to be installed on your system
-https://docs.docker.com/engine/install/
+前提条件：
+システムにDockerがインストールされている必要があります
+(https://docs.docker.com/engine/install/)
 
 Make sure docker service is running
 
@@ -113,15 +113,17 @@ Apply database changes
 
 Go to localhost
 
-## Version
-1.0.0
+localhostにアクセス
 
-## Usage
+## バージョン
+0.0.1 下書き
 
-[See api documentation](docs/openapi.md)
+## 使い方
 
-## License
+更新予定
 
-To be determined.
+## ライセンス
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+決定中。
+
+Laravelフレームワークは、[MITライセンス](https://opensource.org/licenses/MIT)のもとでオープンソースソフトウェアとしてライセンスされています。

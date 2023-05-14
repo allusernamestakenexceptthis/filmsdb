@@ -1,6 +1,6 @@
 version: '3'
 services:
-    laravel.test:
+    filmsdb-app:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
             dockerfile: Dockerfile
@@ -88,7 +88,7 @@ services:
         image: 'axllent/mailpit:latest'
         ports:
             - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8028'
         networks:
             - sail
     selenium:

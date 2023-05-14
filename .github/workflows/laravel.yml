@@ -1,0 +1,68 @@
+# GitHub Action for Laravel
+name: Testing Filmsdb
+on: [push, pull_request]
+jobs:
+  laravel:
+    name: Laravel (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    runs-on: ${{ matrix.operating-system }}
+    services:
+        mysql:
+          image: mysql:5.7
+          ports:
+            - 3306:3306
+          env:
+            DB_HOST: 127.0.0.1
+            MYSQL_DATABASE: testing
+            MYSQL_USER: sail
+            MYSQL_PASSWORD: password
+            MYSQL_ROOT_PASSWORD: secretroot
+          options: --health-cmd "mysqladmin ping -h localhost" --health-interval 20s --health-timeout 10s --health-retries 10  
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['8.1']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Docs: https://github.com/shivammathur/setup-php
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, dom, fileinfo
+          coverage: xdebug
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          # Use composer.json for key, if composer.lock is not committed.
+          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Prepare the application
+        run: |
+          php -r "file_exists('.env') || copy('.env.testing', '.env');"
+          php artisan key:generate
+
+      - name: Clear Config
+        run: php artisan config:clear
+
+      - name: Test with phpunit
+        env:
+            DB_HOST: 127.0.0.1
+            MYSQL_DATABASE: testing
+            DB_USERNAME: sail
+            DB_PASSWORD: password
+            DB_PORT: ${{ job.services.mysql.ports[3306] }}
+        run: vendor/bin/phpunit --coverage-text

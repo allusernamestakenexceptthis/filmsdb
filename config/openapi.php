@@ -23,15 +23,21 @@ return [
 
             'tags' => [
 
-                // [
-                //    'name' => 'user',
-                //    'description' => 'Application users',
-                // ],
+                 [
+                    'name' => 'user',
+                    'description' => 'Authorized regular users',
+                 ],
+
+                 [
+                    'name' => 'admin',
+                    'description' => 'Authorized users with admin role',
+                 ],
 
             ],
 
             'security' => [
                 // GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('JWT'),
+                \GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('bearerAuth'),
             ],
 
             // Non standard attributes used by code/doc generation tools can be added here

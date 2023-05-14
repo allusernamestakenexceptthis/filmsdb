@@ -1,0 +1,288 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Filmsdb",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/localhost"
+        }
+    ],
+    "paths": {
+        "\/get\/token": {
+            "post": {
+                "tags": [
+                    "user",
+                    "admin"
+                ],
+                "summary": "Login to get bearer token",
+                "description": "This endpoint is used to get a token for a user to gain access to\nRestricted endpoints such as favorites",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email address used for login",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Password used for login",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        },
+        "\/movies": {
+            "get": {
+                "summary": "Get movies",
+                "description": "Get list of movies filtered by search query",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "The search query in this format genres:action,adventure,comedy|title:matrix",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The number of items per page",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "$ref": "#\/components\/responses\/"
+                    }
+                }
+            }
+        },
+        "\/movies\/{id}": {
+            "get": {
+                "summary": "Get movie details by id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$ref": "#\/components\/schemas\/Movie"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/favorites": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get favorite movies",
+                "description": "Get list of favorite movies for logged in user",
+                "responses": {
+                    "200": {
+                        "$ref": "#\/components\/responses\/"
+                    },
+                    "401": {
+                        "description": "You are not authorized to access this resource."
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ]
+            }
+        },
+        "\/favorites\/{id}": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Add movie to favorites",
+                "description": "Add movie to favorites for logged in user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Malformed input. Please check the paramters you are sending."
+                    },
+                    "404": {
+                        "description": "The requested resource was not found."
+                    },
+                    "401": {
+                        "description": "You are not authorized to access this resource."
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Remove movie from favorites",
+                "description": "Remove movie from favorites for logged in user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Malformed input. Please check the paramters you are sending."
+                    },
+                    "404": {
+                        "description": "The requested resource was not found."
+                    },
+                    "401": {
+                        "description": "You are not authorized to access this resource."
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "MovieResponseScheme": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#\/components\/schemas\/Movie"
+                        }
+                    },
+                    "current_page": {
+                        "default": 1,
+                        "type": "integer"
+                    },
+                    "total": {
+                        "default": 10,
+                        "type": "integer"
+                    },
+                    "per_page": {
+                        "default": 20,
+                        "type": "integer"
+                    }
+                }
+            },
+            "Movie": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "thumb": {
+                        "type": "string"
+                    },
+                    "genre": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "responses": {
+            "": {
+                "description": "Successful response",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "$ref": "#\/components\/schemas\/MovieResponseScheme"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "BearerToken": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "user",
+            "description": "Authorized regular users"
+        },
+        {
+            "name": "admin",
+            "description": "Authorized users with admin role"
+        }
+    ]
+}

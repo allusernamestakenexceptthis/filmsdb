@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('movies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('role',['admin','user'])->default('user')->comment('admin:管理 user:ユーザー');
+            $table->string('title')->comment('タイトル');
+            $table->text('description')->comment('内容');
+            $table->string('thumb')->comment('画像');
+            $table->string("genre")->comment("ジャンル");
+            $table->bigInteger("popularity")->comment("人気度");
             $table->boolean('is_active')->default(true)->comment('true:有効 false:無効');
-            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('movies');
     }
 };
