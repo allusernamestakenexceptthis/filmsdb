@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->comment('内容');
             $table->string('thumb')->comment('画像');
             $table->string("genre")->comment("ジャンル");
-            $table->bigInteger("popularity")->comment("人気度");
+            $table->bigInteger("popularity")->default(0)->comment("人気度");
             $table->boolean('is_active')->default(true)->comment('true:有効 false:無効');
             $table->timestamps();
         });
