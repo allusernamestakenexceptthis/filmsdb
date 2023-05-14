@@ -37,7 +37,7 @@ return [
 
             'security' => [
                 // GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('JWT'),
-                \GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('bearerAuth'),
+                //\GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('bearerAuth'),
             ],
 
             // Non standard attributes used by code/doc generation tools can be added here
