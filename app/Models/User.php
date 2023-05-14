@@ -73,6 +73,6 @@ class User extends Model implements
      */
     public function getFavoriteMovies()
     {
-        return $this->belongsToMany(Movie::class, 'users_movies_favorites_rel', 'user_id', 'movie_id');
+        return $this->belongsToMany(Movie::class, 'users_movies_favorites_rel', 'user_id', 'movie_id')->using(UsersMoviesFavoritesRel::class);
     }
 }

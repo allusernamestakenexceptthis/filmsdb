@@ -185,6 +185,8 @@ Get list of movies filtered by search query
 |search|query|string|false|The search query in this format genres:action,adventure,comedy|title:matrix|
 |limit|query|integer|false|The number of items per page|
 |page|query|integer|false|The page number|
+|sortby|query|string|false|Sort movies by popularity, title, genre ..etc|
+|sortdir|query|string|false|Sort movies by asc or desc|
 
 > Example responses
 
@@ -197,7 +199,8 @@ Get list of movies filtered by search query
       "title": "string",
       "description": "string",
       "thumb": "string",
-      "genre": "string"
+      "genre": "string",
+      "popularity": 0
     }
   ],
   "current_page": 1,
@@ -212,9 +215,8 @@ Get list of movies filtered by search query
 |---|---|---|---|
 |default|Default|Successful response|[MovieResponseScheme](#schemamovieresponsescheme)|
 
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
+<aside class="success">
+This operation does not require authentication
 </aside>
 
 ## get__movies_{id}
@@ -375,7 +377,8 @@ func main() {
   "title": "string",
   "description": "string",
   "thumb": "string",
-  "genre": "string"
+  "genre": "string",
+  "popularity": 0
 }
 ```
 
@@ -385,9 +388,8 @@ func main() {
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful response|[Movie](#schemamovie)|
 
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
+<aside class="success">
+This operation does not require authentication
 </aside>
 
 <h1 id="filmsdb-user">user</h1>
@@ -534,9 +536,8 @@ Restricted endpoints such as favorites
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-None
+<aside class="success">
+This operation does not require authentication
 </aside>
 
 ## get__favorites
@@ -690,6 +691,16 @@ func main() {
 
 Get list of favorite movies for logged in user
 
+<h3 id="get__favorites-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|search|query|string|false|The search query in this format genres:action,adventure,comedy|title:matrix|
+|limit|query|integer|false|The number of items per page|
+|page|query|integer|false|The page number|
+|sortby|query|string|false|Sort movies by popularity, title, genre ..etc|
+|sortdir|query|string|false|Sort movies by asc or desc|
+
 > Example responses
 
 > 200 Response
@@ -701,7 +712,8 @@ Get list of favorite movies for logged in user
       "title": "string",
       "description": "string",
       "thumb": "string",
-      "genre": "string"
+      "genre": "string",
+      "popularity": 0
     }
   ],
   "current_page": 1,
@@ -1066,7 +1078,8 @@ BearerToken
       "title": "string",
       "description": "string",
       "thumb": "string",
-      "genre": "string"
+      "genre": "string",
+      "popularity": 0
     }
   ],
   "current_page": 1,
@@ -1097,7 +1110,8 @@ BearerToken
   "title": "string",
   "description": "string",
   "thumb": "string",
-  "genre": "string"
+  "genre": "string",
+  "popularity": 0
 }
 
 ```
@@ -1110,4 +1124,5 @@ BearerToken
 |description|string|false|none|none|
 |thumb|string|false|none|none|
 |genre|string|false|none|none|
+|popularity|string|false|none|none|
 

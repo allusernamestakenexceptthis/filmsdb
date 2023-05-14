@@ -43,16 +43,7 @@ class MovieController extends Controller
     public function getMovies(Request $request) : JsonResponse
     {
 
-        //$page = $request->input('page') ?? 1;
-        $limit = (int)$request->input('limit') ?? 20;
-
-        $this->movieRepository->setOrders(['title', 'asc']);
-        $this->movieRepository->setPerPage($limit);
-        $this->movieRepository->setColumns($this->movieRepository->getFillable());
-
-
-        // get search query from request normalize it to array
-        $searchQueryArray = Apputil::queryStringToArray($request->input('search', ''));        
+        $searchQueryArray = $this->setMoviesFilters($this->movieRepository, $request);
 
         try {
             $movies = $this->movieRepository->findBy(
@@ -62,15 +53,8 @@ class MovieController extends Controller
             if (!$movies) {
                 return Apputil::createJsonResponseError(__('Movie not found'), 404);
             }
-           
-            $movies = $movies->toArray();
 
-            $movies = array(
-                'data'=>$movies['data'],
-                'current_page'=>$movies['current_page'],
-                'total'=>$movies['total'],
-                'per_page'=>$movies['per_page'],
-            );
+            $movies = Apputil::getFilteredPagination($movies);
 
         } catch (\Exception $e) {
             return Apputil::createJsonResponseError($e->getMessage(), 400);

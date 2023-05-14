@@ -31,6 +31,17 @@ class MovieSearchParameters extends ParametersFactory
                 ->description('The page number')
                 ->required(false)
                 ->schema(Schema::integer()->default(1)),
+
+            Parameter::query()
+                ->name('sortby')
+                ->description('Sort movies by popularity, title, genre ..etc')
+                ->required(false)
+                ->schema(Schema::string()->default("popularity")),
+            Parameter::query()
+                ->name('sortdir')
+                ->description('Sort movies by asc or desc')
+                ->required(false)
+                ->schema(Schema::string()->default("asc when title,description. desc otherwise")),
         ];
     }
 }

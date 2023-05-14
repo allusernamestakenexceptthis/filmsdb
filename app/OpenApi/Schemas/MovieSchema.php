@@ -26,6 +26,7 @@ class MovieSchema extends SchemaFactory implements Reusable
                 Schema::string('description')->default(null),
                 Schema::string('thumb')->default(null),
                 Schema::string('genre')->default(null),
+                Schema::string('popularity')->default(0),
             );
     }
 }

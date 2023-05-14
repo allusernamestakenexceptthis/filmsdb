@@ -73,6 +73,26 @@
                             "default": 1,
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "sortby",
+                        "in": "query",
+                        "description": "Sort movies by popularity, title, genre ..etc",
+                        "required": false,
+                        "schema": {
+                            "default": "popularity",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sortdir",
+                        "in": "query",
+                        "description": "Sort movies by asc or desc",
+                        "required": false,
+                        "schema": {
+                            "default": "asc when title,description. desc otherwise",
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -117,6 +137,57 @@
                 ],
                 "summary": "Get favorite movies",
                 "description": "Get list of favorite movies for logged in user",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "The search query in this format genres:action,adventure,comedy|title:matrix",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The number of items per page",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sortby",
+                        "in": "query",
+                        "description": "Sort movies by popularity, title, genre ..etc",
+                        "required": false,
+                        "schema": {
+                            "default": "popularity",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sortdir",
+                        "in": "query",
+                        "description": "Sort movies by asc or desc",
+                        "required": false,
+                        "schema": {
+                            "default": "asc when title,description. desc otherwise",
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "$ref": "#\/components\/responses\/"
@@ -246,6 +317,10 @@
                     },
                     "genre": {
                         "type": "string"
+                    },
+                    "popularity": {
+                        "default": 0,
+                        "type": "string"
                     }
                 }
             }
@@ -266,15 +341,10 @@
             "BearerToken": {
                 "type": "http",
                 "scheme": "bearer",
-                "bearerFormat": "JWT"
+                "bearerFormat": "Personal Access Token"
             }
         }
     },
-    "security": [
-        {
-            "bearerAuth": []
-        }
-    ],
     "tags": [
         {
             "name": "user",

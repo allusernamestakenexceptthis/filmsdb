@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+
 /**
  * Apputil class
  * 
@@ -77,5 +79,22 @@ class Apputil {
         return response()->json([
             'message' => $message,
         ], $code);
+    }
+
+    /**
+     * Filter out pagination results
+     * to remove unnecessary fields for api response     * 
+     */    
+    public static function getFilteredPagination(LengthAwarePaginator $movies) : array {
+        $movies = $movies->toArray();
+
+        $movies = array(
+            'data'=>$movies['data'],
+            'current_page'=>$movies['current_page'],
+            'total'=>$movies['total'],
+            'per_page'=>$movies['per_page'],
+        );
+
+        return $movies;
     }
 }

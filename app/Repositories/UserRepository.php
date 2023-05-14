@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Models\Movie;
 use App\Repositories\interfaces\MovieInterface;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Movies interface for repositories to implement
@@ -37,9 +39,15 @@ class UserRepository extends BaseRepository implements MovieInterface
      * @param integer $userId
      * @return LengthAwarePaginator
      */
-    public function getFavoriteMovies(int $userId) : LengthAwarePaginator
+    public function getFavoriteMovies(int $userId, array $searchQueryArray = []) : LengthAwarePaginator
     {
-        return $this->model->find($userId)->getFavoriteMovies()->paginate($this->perPage);
+        $query = $this->model->find($userId)->getFavoriteMovies()->getQuery();
+
+        // to enable search on favorite movies we need add fillables of movies
+        //TODO: create a fillable for joined tables or add them automatically in base repository
+        $this->setFillable(array_merge($this->model->getFillable(), (new Movie)->getFillable()));
+
+        return $this->processQuery($query, $searchQueryArray);
     }
 
     /**
@@ -63,7 +71,19 @@ class UserRepository extends BaseRepository implements MovieInterface
      */
     public function removeFavoriteMovie(int $userId, int $movieId) : bool
     {
-        return $this->model->find($userId)->getFavoriteMovies()->detach($movieId) ? true : false;
+
+        $user = $this->model->find($userId);
+
+        if (!$user) {
+            return false;
+        }
+    
+        $favoriteMovie = $user->getFavoriteMovies()->wherePivot('movie_id', $movieId)->first();
+    
+        if (!$favoriteMovie) {
+            return false;
+        }
+        return $user->getFavoriteMovies()->detach($movieId) ? true : false;
     }
 
 }

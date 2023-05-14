@@ -9,12 +9,14 @@ use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
 use App\Repositories\UserRepository;
 use App\Helpers\Apputil;
+use App\Models\Movie;
+use App\OpenApi\Parameters\MovieSearchParameters;
 use App\OpenApi\Responses\BadRequestResponse;
 use App\OpenApi\Responses\MovieResponse;
 use App\OpenApi\Responses\NotFoundResponse;
 use App\OpenApi\Responses\SuccessResponse;
 use App\OpenApi\Responses\UnauthorizedResponse;
-use GrahamCampbell\ResultType\Success;
+use Illuminate\Http\Request;
 
 /**
  * User controller for api endpoints
@@ -52,15 +54,31 @@ class UserController extends Controller
      *
      */
     #[OpenApi\Operation(tags: ['user'], security: "BearerTokenSecurityScheme")]
+    #[OpenApi\Parameters(factory: MovieSearchParameters::class)]
     #[OpenApi\Response(MovieResponse::class, statusCode: 200, description: 'List of favorite movies')]
     #[OpenApi\Response(UnauthorizedResponse::class, statusCode: 401, description: 'Unauthorized')]
-    public function getFavoriteMovies() : JsonResponse
+    public function getFavoriteMovies(Request $request) : JsonResponse
     {
         $user =  auth('sanctum')->user();
         if (!$user) {
             return $this->userUnauthenticated();
         }
-        $favorites = $this->userRepository->getFavoriteMovies($user->id);
+
+        $searchQueryArray = $this->setMoviesFilters($this->userRepository, $request);
+
+        try {
+            $favorites = $this->userRepository->getFavoriteMovies($user->id, $searchQueryArray) ?? null;
+
+            if (!$favorites) {
+                return Apputil::createJsonResponseError(__('Movie not found'), 404);
+            }
+
+            $favorites = Apputil::getFilteredPagination($favorites);
+
+        } catch (\Exception $e) {
+            return Apputil::createJsonResponseError($e->getMessage(), 400);
+        }
+
         return response()->json($favorites);
     }
 
@@ -119,12 +137,11 @@ class UserController extends Controller
         if (!$movieId) {
             return Apputil::createJsonResponseError(__('Bad reqest'), 400);
         }
-
-        try {
-            $this->userRepository->removeFavoriteMovie($user->id, $movieId);
-        } catch (\Exception $e) {
+        
+        $res = $this->userRepository->removeFavoriteMovie($user->id, $movieId);
+        if (!$res) {
             return Apputil::createJsonResponseError(__("Movie not in your favorite"), 404);
         }
-        return Apputil::createJsonResponseSuccess(['message' => __('Movie removed from favorites')]);
+        return Apputil::createJsonResponseSuccess( __('Movie removed from favorites'));
     }
 }

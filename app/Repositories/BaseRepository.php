@@ -8,6 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Repositories\interfaces\BaseInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Movies interface for repositories to implement
@@ -22,10 +23,11 @@ class BaseRepository implements BaseInterface
      */
     protected Model $model;
 
-    protected int $perPage = 10;
+    protected int $perPage = 20;
     protected array $columns = ['*'];
     protected array $with = [];
     protected array $orders = [];
+    protected array $fillables = [];
 
 
     public function __construct(Model $model)
@@ -94,27 +96,43 @@ class BaseRepository implements BaseInterface
      *
      * @return LengthAwarePaginator
      */
-    public function all(array $attributes = null): LengthAwarePaginator /* throws \Exception */ {
+    public function all(array $attributes = array()): LengthAwarePaginator /* throws \Exception */ {
         $query = $this->model->query();
+        return $this->processQuery($query, $attributes);
+    }
+
+    /**
+     * Centralize query processing to enable pagination and search in one place
+     *
+     * @param Builder $query
+     * @param array $attributes
+     * 
+     * @return LengthAwarePaginator
+     */
+    public function processQuery(Builder $query, array $attributes = array()): LengthAwarePaginator /* throws \Exception */ {
         $query->select($this->columns);
         $query->with($this->with);
         if ($this->orders) {
-            $query->orderBy(...$this->orders);
+            foreach ($this->orders as $order) {
+                if (isset($order[1]) && !in_array($order[1], ['asc', 'desc'])) {
+                    throw new \Exception(__("Invalid order direction :direction", ['direction'=>e($order[1])]));
+                }
+                $query->orderBy(...$order);
+            }
         }
 
         if ($attributes) {
-
             if (!is_array($attributes[0])) {
                 $attributes = [$attributes];
-            }
-
-            if (!$this->checkIfAttributesExists($attributes)) {
-                throw new \Exception("Invalid attributes");
             }
 
             foreach ($attributes as $attribute) {
                 $query->where($attribute[0], "like", '%'.$attribute[1].'%');
             }
+        }
+
+        if ($invalidAttribute = $this->checkForInvalidAttribute($attributes, $this->orders)) {
+            throw new \Exception(__("Invalid attributes :attribute_name", ['attribute_name'=>e($invalidAttribute)]));
         }
 
         return $query->paginate($this->perPage);
@@ -164,7 +182,7 @@ class BaseRepository implements BaseInterface
      * @return self
      */
     public function setOrders(array $orders): self {
-        $this->orders = $orders;
+        $this->orders[] = $orders;
         return $this;
     }
 
@@ -175,13 +193,21 @@ class BaseRepository implements BaseInterface
      * 
      * @return boolean
      */
-    public function checkIfAttributesExists($attributes) {
+    public function checkForInvalidAttribute(array $attributes, array $orders = []) {
+        //merge attributes and orders
+        $attributes = array_merge($attributes, $orders);
+
+        //if no attributes means no invalid attribute
+        if (!$attributes) {
+            return false;
+        }
+
         foreach ($attributes as $attribute) {
-            if (!in_array($attribute[0], $this->model->getFillable())) {
-                return false;
+            if (!in_array(strtolower($attribute[0]), $this->getFillable())) {
+                return $attribute[0];
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -190,6 +216,22 @@ class BaseRepository implements BaseInterface
      * @return array<string> $fillable
      */
     public function getFillable() : array {
-        return $this->model->getFillable();
+        if ($this->fillables) {
+            return $this->fillables;
+        } else {
+            return $this->model->getFillable();
+        }
+    }
+
+    /**
+     * Set the fillable attributes
+     *
+     * @param array<string> $fillables
+     * 
+     * @return self
+     */
+    public function setFillable(array $fillables) : self {
+        $this->fillables = $fillables;
+        return $this;
     }
 }

@@ -16,4 +16,16 @@ class ResponseTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+     /**
+     * Test favorites route returns unauthenticated response.
+     */
+    public function test_favorites_returns_unauthorized_response(): void
+    {
+        $response = $this->get('/favorites', [
+            'Accept' => 'application/json',
+        ]);
+
+        $response->assertStatus(401);
+    }
 }

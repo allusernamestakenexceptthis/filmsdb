@@ -10,12 +10,12 @@ Filmsdb is a laravel based films database api.  It allows clients to search for 
 
 ## Installation
 
-Instructions will change.
-
 ### Step 1
 
 Clone this repository
+```
 git clone https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis.git
+```
 
 Copy .env.testing to .env
 
@@ -103,15 +103,17 @@ Or install a web server such as nginx and point it to laravel
 
 ### Step 3
 
-Apply database changes
+Generate Key, apply database migration and seed database with samples
 
 ```bash
+./vendor/bin/sail php artisan key:generate
 ./vendor/bin/sail php artisan migrate
+./vendor/bin/sail php artisan db:seed
 ```
 
 ### step 4
 
-Go to localhost
+Go to http://localhost
 
 ## Version
 1.0.0
@@ -119,6 +121,72 @@ Go to localhost
 ## Usage
 
 [See api documentation](docs/openapi.md)
+
+When doing:
+
+```
+php artisan db:seed
+```
+
+You'll have a testing account with following credentials:
+```
+email: testuser@example.com
+password: testpassword
+```
+
+No admin account is generated via seeding
+
+Curl commands for convenience:
+```
+curl -X POST "localhost/get/token" -H "Accept: application/json; " -d '{"email":"testuser@example.com", "password":"testpassword"}'
+curl -X GET "localhost/favorites" -H "Authorization: Bearer YOUR_TOKEN" -H "Accept:application/json"
+curl -X POST "localhost/favorites/1" -H "Authorization: Bearer YOUR_TOKEN" -H "Accept:application/json"
+curl -X DELETE "localhost/favorites/1" -H "Authorization: Bearer YOUR_TOKEN" -H "Accept:application/json"
+
+curl "localhost/movies?search=genre:a&limit=3&page=2" -H "Accept:application/json"
+curl "localhost/movies/1" -H "Accept:application/json"
+curl "localhost/movies" -H "Accept:application/json"
+```
+
+On the web, this app was published using version 1.0.0 here:
+[https://filmsdb.japanji.pro/](https://filmsdb.japanji.pro/)
+
+curl commands for convenience:
+```
+curl -X POST "localhost/get/token" -H "Accept: application/json; " -d '{"email":"testuser@example.com", "password":"testpassword"}'
+curl -X GET "localhost/favorites" -H "Authorization: Bearer YOUR_TOKEN" -H "Accept:application/json"
+curl -X GET "localhost/favorites?search=genre:action" -H "Authorization: Bearer YOUR_TOKEN" -H "Accept:application/json"
+curl -X POST "localhost/favorites/1" -H "Authorization: Bearer YOUR_TOKEN" -H "Accept:application/json"
+curl -X DELETE "localhost/favorites/1" -H "Authorization: Bearer YOUR_TOKEN" -H "Accept:application/json"
+
+curl "localhost/movies?search=genre:romance&limit=3&page=2" -H "Accept:application/json"
+curl "localhost/movies/1" -H "Accept:application/json"
+curl "localhost/movies" -H "Accept:application/json"
+```
+
+There is a rate limiting on getting token. 1 attempt per minute and 5 per hour for same email
+
+## Suggestion
+- Instead of using query string for search, it's better to use json request body. it can accomodate more request
+- Might be better to add v1/ as url prefix for api endpoints.  In future we might completely rework the api and to avoid mixing with public web.
+
+## TODO
+- Move genre to new relational table that acts as tag for movies, so we can add more keys like director, year of release:
+```
+    movies_tags
+        tag_id
+        tag_name
+
+    movies_tags_rel
+        movie_id
+        tag_id
+        tag_value
+```
+
+## Thanks
+
+Thanks for taking a look and evaluating project. 
+
 
 ## License
 
