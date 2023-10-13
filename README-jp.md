@@ -2,7 +2,7 @@
 
 [English](README.md) [日本語](README-jp.md)
 
-[![Testing Filmsdb](https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis/actions/workflows/laravel.yml/badge.svg)](https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis/actions/workflows/laravel.yml)
+[![Testing Filmsdb](https://github.com/allusernamestakenexceptthis/filmsdb/actions/workflows/laravel.yml/badge.svg)](https://github.com/allusernamestakenexceptthis/filmsdb/actions/workflows/laravel.yml)
 
 # FilmsDB
 
@@ -14,7 +14,7 @@ Filmsdbは、Laravelベースの映画データベースAPIです。クライア
 
 このリポジトリをクローンします。
 ```
-git clone https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis.git
+git clone https://github.com/allusernamestakenexceptthis/filmsdb.git
 ```
 
 .env.testingを.envにコピーします。
@@ -148,9 +148,6 @@ curl "localhost/movies/1" -H "Accept:application/json"
 curl "localhost/movies" -H "Accept:application/json"
 ```
 
-ウェブ上で、このアプリはこちらでバージョン1.0.0として公開されました：
-[https://filmsdb.japanji.pro/](https://filmsdb.japanji.pro/)
-
 curl commands for convenience:
 ```
 curl -X POST "localhost/get/token" -H "Accept: application/json; " -d '{"email":"testuser@example.com", "password":"testpassword"}'
@@ -182,11 +179,6 @@ curl "localhost/movies" -H "Accept:application/json"
         tag_id
         tag_value
 ```
-
-## Thanks
-
-プロジェクトを見て評価していただき、ありがとうございます
-
 
 ## ライセンス
 

@@ -2,9 +2,11 @@
 
 [English](README.md) [日本語](README-jp.md) 
 
-[![Testing Filmsdb](https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis/actions/workflows/laravel.yml/badge.svg)](https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis/actions/workflows/laravel.yml)
+[![Testing Filmsdb](https://github.com/allusernamestakenexceptthis/filmsdb/actions/workflows/laravel.yml/badge.svg)](https://github.com/allusernamestakenexceptthis/filmsdb/actions/workflows/laravel.yml)
 
 # FilmsDB
+
+Demonstration project to show implementation of a REST api with openAPI standard using laravel.
 
 Filmsdb is a laravel based films database api.  It allows clients to search for films, getting details, authenticate, add and get favorites. 
 
@@ -14,7 +16,7 @@ Filmsdb is a laravel based films database api.  It allows clients to search for 
 
 Clone this repository
 ```
-git clone https://github.com/monstar-lab-technical-challenge/ml-backend-test-allusernamestakenexceptthis.git
+git clone https://github.com/allusernamestakenexceptthis/filmsdb.git
 ```
 
 Copy .env.testing to .env
@@ -148,9 +150,6 @@ curl "localhost/movies/1" -H "Accept:application/json"
 curl "localhost/movies" -H "Accept:application/json"
 ```
 
-On the web, this app was published using version 1.0.0 here:
-[https://filmsdb.japanji.pro/](https://filmsdb.japanji.pro/)
-
 curl commands for convenience:
 ```
 curl -X POST "localhost/get/token" -H "Accept: application/json; " -d '{"email":"testuser@example.com", "password":"testpassword"}'
@@ -182,11 +181,6 @@ There is a rate limiting on getting token. 1 attempt per minute and 5 per hour f
         tag_id
         tag_value
 ```
-
-## Thanks
-
-Thanks for taking a look and evaluating project. 
-
 
 ## License
 
